@@ -158,6 +158,56 @@ const actors = [{
   }]
 }];
 
+function Time(rental){
+  var pickupDate = new Date(rental.pickupDate);
+  var returnDate = new Date(rental.returnDate);
+  var nbDays = (returnDate - pickupDate)/(1000*60*60*24)+1;
+  //Console.log(nbDays);
+  return nbDays * cars.find(x => x.id === rental.carId).pricePerDay;
+}
+function Time2(rental){
+  var pickupDate = new Date(rental.pickupDate);
+  var returnDate = new Date(rental.returnDate);
+  var nbDays = (returnDate - pickupDate)/(1000*60*60*24)+1;
+  var coef = 1;
+  //Console.log(nbDays);
+  if (nbDays > 10)
+  {
+    coef = 0.5;
+  }
+  if (nbDays > 4 && nbDays < 10)
+  {
+    coef = 0.3
+  }
+  if (nbDays > 1 && nbDays < 4)
+  {
+    coef = 0.1
+  }
+  return (nbDays * cars.find(x => x.id === rental.carId).pricePerDay)*coef;
+}
+
+function distance(rental){
+  return rental.distance * cars.find(x => x.id === rental.carId).pricePerKm;
+}
+
+rentals.forEach(function(part,index){
+  this[index].price= Time2(part) + distance(part);
+}, rentals);
+
+function prizeDecr(rental)
+{
+  rental.forEach(element => {
+    res = 0;
+    if (Time(element) >= 1 && Time(element)<4)
+      res = 0.1;
+    else if (Time(element) >= 4 && Time(element)<10)
+      res = 0.3;
+    else
+      res = 0.5;
+  });
+  return res;
+}
+ 
 console.log(cars);
 console.log(rentals);
 console.log(actors);
